@@ -2,17 +2,73 @@ package com.pluralsight;
 
 
 import com.pluralsight.model.Book;
+import com.pluralsight.util.Console;
+
+import java.util.Scanner;
 
 public class Main {
+
+    static Book[] library;
+
     public static void main(String[] args) {
+    library = getInitializedLibrary();
+
+
+    displayBooks(library);
 
     }
 
+    private static char promptMainChoices() {
+        System.out.println("-".repeat(20) + "Welcome to USA Library" + "-".repeat(20));
+        System.out.println("    Show [A]vailable Books");
+        System.out.println("    Show [C]hecked Out Books");
+        System.out.println("    E[X]it the Library");
+
+        do{
+
+            System.out.print("Command [A, C, X]: ");
+            String command = Console.promptForString();
+
+            if ( command.equalsIgnoreCase("A")){
+                return 'A';
+            }
+            if (command.equalsIgnoreCase("C")){
+                return 'C';
+            }
+            if (command.equalsIgnoreCase("X")
+                    || command.equalsIgnoreCase("EXIT")
+                    || command.equalsIgnoreCase("Q")
+                    || command.equalsIgnoreCase("QUIT")
+            ){
+                return 'X';
+            }
+        }  while (true);
 
 
-    public static Book[] initializedLibrary() {
+    }
 
-        Book[] library = new Book[30];
+    /**
+     *  display the current books' status
+     * @param books
+     */
+    public static void displayBooks(Book[] books) {
+
+        String space = " ";
+        System.out.println(space.repeat(3) + "ID |" + space.repeat(30) + "Title" + space.repeat(37) + "|" + space.repeat(11)  + "ISBN " + space.repeat(11) + "|" + space.repeat(5) + "Check Out To" + space.repeat(5) + "|");
+        System.out.println("-".repeat(130));
+        for (Book book: books) {
+
+            System.out.printf("%5s | %70s | %25s | %25s \n".formatted(book.getId(), book.getTitle(), book.getIsbn(), book.getCheckedOutTo()));
+        }
+    }
+    /**
+     *
+     * initializing the books
+     * @return Book[]
+     */
+    private static Book[] getInitializedLibrary() {
+
+        Book[] library = new Book[20];
 
         // First 20 books, with Title first and ISBN second
         library[0] = new Book(1, "Mindset: The New Psychology of Success", "978-0345472328");
@@ -35,31 +91,6 @@ public class Main {
         library[17] = new Book(18, "The Untethered Soul", "978-1501161933");
         library[18] = new Book(19, "The Gifts of Imperfection", "978-0307455925");
         library[19] = new Book(20, "Eclipse", "978-0316029186");
-
-        // Adding 10 more books with Title first and ISBN second
-        library[20] = new Book(21, "Becoming", "978-1400069286");
-        library[21] = new Book(22, "Steve Jobs", "978-1451648539");
-        library[22] = new Book(23, "Essentialism: The Disciplined Pursuit of Less", "978-0804139298");
-        library[23] = new Book(24, "The Silent Patient", "978-0316497809");
-        library[24] = new Book(25, "Educated", "978-1501171346");
-        library[25] = new Book(26, "The Immortal Life of Henrietta Lacks", "978-0812993547");
-        library[26] = new Book(27, "Where the Crawdads Sing", "978-1250217349");
-        library[27] = new Book(28, "Me Before You", "978-0385349949");
-        library[28] = new Book(29, "The Night Circus", "978-1476775715");
-        library[29] = new Book(30, "The Girl on the Train", "978-1501110368");
-
         return library;
     }
 }
-
-
-
-//record Book (int id, String isbn, String title, boolean isCheckedOut, String checkedOutTo) {
-//
-//    public void checkOut(String name) {
-//    }
-//
-//    public boolean StringIn() {
-//
-//    }
-//}
