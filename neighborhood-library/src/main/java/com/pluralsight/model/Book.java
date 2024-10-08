@@ -2,6 +2,11 @@ package com.pluralsight.model;
 
 import java.util.Objects;
 
+/**
+ * The {@code Book} class represents a book in a library system.
+ * It provides properties such as {@code id}, {@code isbn}, {@code title}, {@code isCheckedOut},
+ * and {@code checkedOutTo}, along with methods for checking in and checking out books.
+ */
 public class Book {
 
     private int id;
@@ -10,6 +15,9 @@ public class Book {
     private boolean isCheckedOut;
     private String checkedOutTo;
 
+    /*
+     constructors, getters and setters
+     */
     public Book() {
     }
 
@@ -89,12 +97,20 @@ public class Book {
     }
 
 
-    private void checkOut(String name) {
+    /**
+     * check out the book
+     *
+     * @param name set checkout person'name to the book object
+     */
+    public void checkOut(String name) {
         this.checkedOutTo = name;
         this.isCheckedOut = true;
     }
 
-    private void checkIn() {
+    /**
+     * Checks the book back in, resetting its status.
+     */
+    public void checkIn() {
         this.isCheckedOut = false;
         this.checkedOutTo = "";
     }

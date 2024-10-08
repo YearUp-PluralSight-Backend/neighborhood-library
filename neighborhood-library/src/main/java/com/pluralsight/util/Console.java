@@ -4,8 +4,7 @@ import java.util.Scanner;
 
 public class Console {
 
-    final static Scanner scanner = new Scanner(System.in);
-
+    static Scanner scanner = new Scanner(System.in);
 
 
 
@@ -15,6 +14,23 @@ public class Console {
      * @return String
      */
     public static String promptForString() {
+        System.out.println();
+        String value;
+        try {
+            value = scanner.nextLine().trim();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return value;
+    }
+
+    /**
+     *
+     * @param prompt
+     * @return
+     */
+    public static String promptForString(String prompt) {
+        System.out.println(prompt);
         String value;
         try {
             value = scanner.nextLine().trim();

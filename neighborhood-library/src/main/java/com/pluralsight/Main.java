@@ -4,66 +4,187 @@ package com.pluralsight;
 import com.pluralsight.model.Book;
 import com.pluralsight.util.Console;
 
-import java.util.Scanner;
+import java.util.Arrays;
+import java.util.List;
 
+/**
+ * The {@code Main} represents an entry for the library system
+ * It provides properties such as {@code library}, {@code availableBooksList}, {@code unAvailableBooksList}, {@code exitOptions}
+ * It has method: {@code homeScreen} {@code checkInOrOut} {@code printMenu} {@code unAvailableBooks} {@code availableBooks} {@code displayBooks} {@code getInitializedLibrary}
+ * <p>
+ * * This class includes:
+ * <ul>
+ *     <li></li>
+ * </ul>
+ * </p>
+ */
 public class Main {
 
-    static Book[] library;
 
+    static Book[] library;      /* An array to store the books */
+    static Book[] availableBooksList;     /* An array to store the available books */
+    static Book[] unAvailableBooksList;     /* An array to store the  unavailable books */
+    static List<String> exitOptions = List.of("Q", "X", "EXIT", "QUIT");     /* a list of option for exit the program */
+
+
+    /**
+     * run the application without arguments
+     *
+     * @param args
+     */
     public static void main(String[] args) {
-    library = getInitializedLibrary();
-
-
-    displayBooks(library);
+        library = getInitializedLibrary();
+        displayBooks(library);
+        homeScreen();
 
     }
 
-    private static char promptMainChoices() {
-        System.out.println("-".repeat(20) + "Welcome to USA Library" + "-".repeat(20));
-        System.out.println("    Show [A]vailable Books");
-        System.out.println("    Show [C]hecked Out Books");
-        System.out.println("    E[X]it the Library");
+    /**
+     * prompt a multi-choices for users
+     * based on their choices, guide them to different methods:
+     *
+     * @return char
+     */
 
-        do{
+    private static void homeScreen() {
 
-            System.out.print("Command [A, C, X]: ");
-            String command = Console.promptForString();
+        String command = "";
+        do {
+            try {
+                printMenu("Welcome to USA Library", "Show [A]vailable Books", "Show [C]hecked Out Books", "E[X]it the Library");
+                System.out.printf("-".repeat(50) + "Command [A, C, X]: ");
+                command = Console.promptForString().toUpperCase();
 
-            if ( command.equalsIgnoreCase("A")){
-                return 'A';
+                switch (command) {
+                    case "A":
+                        availableBooksList = availableBooks(library);
+                        displayBooks(availableBooksList);
+                        boolean checkOut = Console.promptForYesNo("Would you like to checkout? ");
+                        if (checkOut) {
+                            checkInOrOut("checkout");
+                        }
+                        break;
+                    case "C":
+                        unAvailableBooksList = unAvailableBooks(library);
+                        displayBooks(unAvailableBooksList);
+                        boolean checkIn = Console.promptForYesNo("Would you like to checkin? ");
+                        if (checkIn) {
+                            checkInOrOut("checkin");
+                        }
+                        break;
+                    case "I":
+                        break;
+                    case "X":
+                    case "Q":
+                    case "EXIT":
+                    case "QUIT":
+                        return;
+                    default:
+                        System.out.println("Out of the options. Only [A, C, X]");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            if (command.equalsIgnoreCase("C")){
-                return 'C';
-            }
-            if (command.equalsIgnoreCase("X")
-                    || command.equalsIgnoreCase("EXIT")
-                    || command.equalsIgnoreCase("Q")
-                    || command.equalsIgnoreCase("QUIT")
-            ){
-                return 'X';
-            }
-        }  while (true);
+
+        } while (!exitOptions.contains(command));
 
 
     }
 
     /**
-     *  display the current books' status
+     * based on their option to either check in or check out the book
+     *
+     * @param option
+     */
+    private static void checkInOrOut(String option) {
+        try {
+            String name = Console.promptForString("Please enter your name: ");
+            int bookId = Console.promptForShort("Please enter book id: ");
+
+            for (Book book : library) {
+
+                if (option.equalsIgnoreCase("checkout")) {
+                    if (book.getId() == bookId) {
+                        book.checkOut(name);
+                        break;
+                    }
+                } else if (option.equalsIgnoreCase("checkin")) {
+                    if (book.getId() == bookId) {
+                        book.checkIn();
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * print out the menu of the Library
+     *
+     * @param header
+     * @param options
+     */
+    private static void printMenu(String header, String... options) {
+        System.out.println("-".repeat(50) + header + "-".repeat(50));
+        for (String option : options) {
+            System.out.println("-".repeat(50) + option + "-".repeat(50));
+        }
+    }
+
+    /**
+     * @param library
+     * @return books that are unavailable.
+     */
+    private static Book[] unAvailableBooks(Book[] library) {
+
+
+        int newUnavaliableBooksLength = Arrays.stream(library).filter(book -> book.isCheckedOut()).toArray().length;
+        Book[] unAvailableBooks = new Book[newUnavaliableBooksLength];
+
+        for (int i = 0; i < library.length; i++) {
+            if (library[i].isCheckedOut()) {
+                unAvailableBooks[i] = library[i];
+            }
+        }
+
+        return unAvailableBooks;
+    }
+
+    /**
+     * accept one list of books as argument
+     * filtering them based on their conditions, if it is not checked out, save to the availableBooks.
+     *
+     * @param books
+     * @return Book[]
+     */
+    private static Book[] availableBooks(Book[] books) {
+
+        Book[] availableBooks = Arrays.stream(books).filter(book -> !book.isCheckedOut()).toArray(Book[]::new);
+        return availableBooks;
+    }
+
+    /**
+     * display the current books' status
+     *
      * @param books
      */
     public static void displayBooks(Book[] books) {
 
         String space = " ";
-        System.out.println(space.repeat(3) + "ID |" + space.repeat(30) + "Title" + space.repeat(37) + "|" + space.repeat(11)  + "ISBN " + space.repeat(11) + "|" + space.repeat(5) + "Check Out To" + space.repeat(5) + "|");
+        System.out.println(space.repeat(3) + "ID |" + space.repeat(30) + "Title" + space.repeat(37) + "|" + space.repeat(11) + "ISBN " + space.repeat(11) + "|" + space.repeat(5) + "Check Out To" + space.repeat(5) + "|");
         System.out.println("-".repeat(130));
-        for (Book book: books) {
+        for (Book book : books) {
 
-            System.out.printf("%5s | %70s | %25s | %25s \n".formatted(book.getId(), book.getTitle(), book.getIsbn(), book.getCheckedOutTo()));
+            System.out.printf("%5s | %70s | %25s | %20s \n".formatted(book.getId(), book.getTitle(), book.getIsbn(), book.getCheckedOutTo()));
         }
     }
+
     /**
-     *
      * initializing the books
+     *
      * @return Book[]
      */
     private static Book[] getInitializedLibrary() {
@@ -91,6 +212,13 @@ public class Main {
         library[17] = new Book(18, "The Untethered Soul", "978-1501161933");
         library[18] = new Book(19, "The Gifts of Imperfection", "978-0307455925");
         library[19] = new Book(20, "Eclipse", "978-0316029186");
+
+        library[0].setCheckedOut(true);
+        library[0].setCheckedOutTo("Harry");
+
+        library[1].setCheckedOut(true);
+        library[1].setCheckedOutTo("Harry");
         return library;
     }
 }
+
