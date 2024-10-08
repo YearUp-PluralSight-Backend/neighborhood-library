@@ -140,9 +140,9 @@ public class Main {
      * @param options
      */
     private static void printMenu(String header, String... options) {
-        System.out.println("-".repeat(50) + header + "-".repeat(50));
+        System.out.println("-".repeat(50) + header + "-".repeat(55));
         for (String option : options) {
-            System.out.println("-".repeat(50) + option + "-".repeat(50));
+            System.out.println("-".repeat(50) + option + "-".repeat(55));
         }
     }
 
