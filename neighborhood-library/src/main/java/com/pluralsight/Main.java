@@ -25,6 +25,8 @@ public class Main {
     static Book[] availableBooksList;     /* An array to store the available books */
     static Book[] unAvailableBooksList;     /* An array to store the  unavailable books */
     static List<String> exitOptions = List.of("Q", "X", "EXIT", "QUIT");     /* a list of option for exit the program */
+    final static String CHECKOUT = "checkout";
+    final static String CHECKIN = "checkin";
 
 
     /**
@@ -52,7 +54,7 @@ public class Main {
         do {
             try {
                 printMenu("Welcome to USA Library", "Show [A]vailable Books", "Show [C]hecked Out Books", "E[X]it the Library");
-                System.out.printf("-".repeat(50) + "Command [A, C, X]: ");
+                System.out.print("-".repeat(50) + "Command [A, C, X]: ");
                 command = Console.promptForString().toUpperCase();
 
                 switch (command) {
@@ -61,7 +63,7 @@ public class Main {
                         displayBooks(availableBooksList);
                         boolean checkOut = Console.promptForYesNo("Would you like to checkout? ");
                         if (checkOut) {
-                            checkInOrOut("checkout");
+                            checkInOrOut(CHECKOUT);
                         }
                         break;
                     case "C":
@@ -69,7 +71,7 @@ public class Main {
                         displayBooks(unAvailableBooksList);
                         boolean checkIn = Console.promptForYesNo("Would you like to checkin? ");
                         if (checkIn) {
-                            checkInOrOut("checkin");
+                            checkInOrOut(CHECKIN);
                         }
                         break;
                     case "I":
@@ -101,20 +103,30 @@ public class Main {
             String name = Console.promptForString("Please enter your name: ");
             int bookId = Console.promptForShort("Please enter book id: ");
 
-            for (Book book : library) {
+            if (option.equalsIgnoreCase(CHECKOUT)) {
+                for (Book book : library) {
 
-                if (option.equalsIgnoreCase("checkout")) {
                     if (book.getId() == bookId) {
                         book.checkOut(name);
-                        break;
-                    }
-                } else if (option.equalsIgnoreCase("checkin")) {
-                    if (book.getId() == bookId) {
-                        book.checkIn();
+                        System.out.println(name + "checkout the" + book.getTitle());
                         break;
                     }
                 }
+            } else if (option.equalsIgnoreCase(CHECKIN)) {
+
+                for (Book book : library) {
+
+                    if (book.getId() == bookId) {
+                        book.checkIn();
+                        System.out.println(name + "checkout the" + book.getTitle());
+                        break;
+                    }
+                }
+            } else {
+                System.out.println("Out of Option!");
             }
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
