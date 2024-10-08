@@ -1,7 +1,3 @@
-Certainly! Here’s a documentation template for your Java library system code, including descriptions for the `Main`, `Console`, and `Book` classes, along with their methods.
-
----
-
 # Library System Documentation
 
 ## Overview
